@@ -1,18 +1,18 @@
 import 'package:event_management_app/services/auth.dart';
-import 'package:event_management_app/screens/home_screen.dart';
-import 'package:event_management_app/screens/signup_screen.dart';
+import 'package:event_management_app/screens/login_screen.dart';
 import 'package:event_management_app/utils/app_colors.dart';
 import 'package:event_management_app/widgets/custom_input_form.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -28,9 +28,20 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 80,
             ),
             const Text(
-              "Login",
+              "Sign Up",
               style: TextStyle(
                   color: kLightBlue, fontSize: 32, fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            CustomInputForm(
+                controller: _nameController,
+                icon: Icons.person,
+                label: "Name",
+                hint: "Enter Your Name"),
+            const SizedBox(
+              height: 8,
             ),
             const SizedBox(
               height: 8,
@@ -52,42 +63,28 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(
               height: 8,
             ),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  "Forgot Password",
-                  style: TextStyle(
-                      color: kLightBlue,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w300),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 8,
-            ),
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  loginUser(_emailController.text.trim(),
+                  createUser(
+                          _nameController.text.trim(),
+                          _emailController.text.trim(),
                           _passwordController.text.trim())
                       .then((value) {
-                    if (value) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Login Successfully..")));
-
+                    if (value == "success") {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Account Created")));
                       Future.delayed(
                           const Duration(seconds: 2),
                           () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const HomeScreen())));
+                                  builder: (context) => const LoginScreen())));
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Login Failed Try Again...")));
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text(value)));
                     }
                   });
                 },
@@ -95,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     foregroundColor: kLightBlue,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8))),
-                child: const Text("Login"),
+                child: const Text("Sign Up"),
               ),
             ),
             const SizedBox(
@@ -106,13 +103,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const SignUpScreen()));
+                        builder: (context) => const LoginScreen()));
               },
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Create a New Account ?",
+                    "Already have an account?",
                     style: TextStyle(
                         color: kLightBlue,
                         fontSize: 16,
@@ -122,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: 4,
                   ),
                   Text(
-                    "Sign Up",
+                    "Login",
                     style: TextStyle(
                         color: kLightBlue,
                         fontSize: 16,
